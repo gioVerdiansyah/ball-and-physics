@@ -1,0 +1,48 @@
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.MathJax, p{
+  margin: 0 !important;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+}
+
+#main {
+  flex: 3.5;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: lightblue;
+}
+
+#formulas {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  color: black;
+}
+
+#formulas h1{
+  color: black;
+  font-size: 35px;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.content{
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}

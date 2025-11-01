@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      margin: 10px;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="main"></canvas>
+
+<canvas id="main"></canvas>
+<script>
+  const canvas = document.getElementById("main");
+  canvas.height = 500;
+  canvas.width = 500;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let deg = 0;
+
+  function drawArc() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, 100, (180 * Math.PI / 180), Math.PI);
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+  }
+
+  setInterval(() => {
+    if (deg < 360) {
+      deg += 1;
+      drawArc();
+    }
+  }, 100);
+</script>
+</body>
+
+</html>
