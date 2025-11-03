@@ -4,9 +4,11 @@ const ctx = canvas.getContext("2d");
 canvas.width = canvas.clientWidth / 1.5;
 canvas.height = canvas.clientHeight;
 
-const Fpush = 9000; // gaya dorong
-const frictionCoef = 0.5; // koefisien gesekan (lebih besar = cepat melambat)
-const restitution = 0.9; // elastisitas pantulan
+const g = 9.81;
+const Fpush = 9000;
+const frictionCoef = 0.5; // koefisien gesek udara
+const mu = 5; // koefisien gesek papan
+const restitution = 0.9; // koefisien restitusi pantulan
 
 const ringPosition = {
   ty: 20,
@@ -179,6 +181,7 @@ function playerController(dt) {
 
 function botMoveLogic(dt) {
   const speed = 350; // px/s
+  
   if (ball.y < ringPosition.mv - 20) {
     if (ball.x < player2.x) player2.x -= speed * dt;
     if (ball.x > player2.x) player2.x += speed * dt;
@@ -206,12 +209,18 @@ function handleCollisions(dt) {
   if (d1 <= ball.r + player1.r) {
     const nx = (ball.x - player1.x) / d1;
     const ny = (ball.y - player1.y) / d1;
+
     const overlap = ball.r + player1.r - d1;
     ball.x += nx * overlap;
     ball.y += ny * overlap;
 
-    ball.ax += (nx * Fpush) / ball.m;
-    ball.ay += (ny * Fpush) / ball.m;
+    // Fv = F * n
+    const Fvx = Fpush * nx;
+    const Fvy = Fpush * ny;
+
+    // a = Fv / m
+    ball.ax += Fvx / ball.m;
+    ball.ay += Fvy / ball.m;
   }
 
   // collision player2 & ball
@@ -219,17 +228,21 @@ function handleCollisions(dt) {
   if (d2 <= ball.r + player2.r) {
     const nx = (ball.x - player2.x) / d2;
     const ny = (ball.y - player2.y) / d2;
+    
     const overlap = ball.r + player2.r - d2;
     ball.x += nx * overlap;
     ball.y += ny * overlap;
 
-    ball.ax += (nx * Fpush) / ball.m;
-    ball.ay += (ny * Fpush) / ball.m;
+    const Fvx = Fpush * nx;
+    const Fvy = Fpush * ny;
+
+    ball.ax += Fvx / ball.m;
+    ball.ay += Fvy / ball.m;
   }
 
   // wall bounce
   if (ball.x - ball.r < ringPosition.lx) {
-    ball.x = ringPosition.lx + ball.r;
+    ball.x = ringPosition.lx + ball.r; // bola agar langsung menempel dan pantulan jadi lebih akurat / elastis
     ball.vx *= -restitution;
   }
   if (ball.x + ball.r > ringPosition.rx) {
@@ -256,13 +269,31 @@ function updateBall(dt) {
   // GLBB
   ball.vx += ball.ax * dt;
   ball.vy += ball.ay * dt;
+
   ball.x += ball.vx * dt;
   ball.y += ball.vy * dt;
 
-  // gesekan (drag)
+  // gesekan udara
   const drag = Math.pow(1 - frictionCoef * dt, dt * 60);
   ball.vx *= drag;
   ball.vy *= drag;
+
+  // Gesekan papan
+  const ballV = Math.sqrt(ball.vx ** 2 + ball.vy ** 2);
+  if (ballV > 0){
+    // arah kecepatan
+    const vxNorm = ball.vx / ballV;
+    const vyNorm = ball.vy / ballV;
+
+    // a
+    const af = mu * g;
+
+    ball.vx -= vxNorm * af * dt;
+    ball.vy -= vyNorm * af * dt;
+
+    if (Math.abs(ball.vx) < 0.01) ball.vx = 0;
+    if (Math.abs(ball.vy) < 0.01) ball.vy = 0;
+  }
 
   ball.ax = 0;
   ball.ay = 0;

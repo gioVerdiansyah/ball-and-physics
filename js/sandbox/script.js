@@ -4,9 +4,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = canvas.clientWidth / 1.5;
 canvas.height = canvas.clientHeight;
 
-const dt = 1 / 60;
-const Fpush = 800; // gaya dorong pemain (N)
-const frictionCoef = 0.0085; // koefisien gesekan udara
+const dt = 1 / 30;
+const Fpush = 800; // N
+const frictionCoef = 0.0001;
 
 const ringPosition = {
   ty: 20,
@@ -57,11 +57,11 @@ const drawPlayersBall = () => {
   ctx.closePath();
 
   // Player 2
-  ctx.beginPath();
-  ctx.arc(player2.x, player2.y, player2.r, 0, Math.PI * 2);
-  ctx.fillStyle = player2.color;
-  ctx.fill();
-  ctx.closePath();
+  // ctx.beginPath();
+  // ctx.arc(player2.x, player2.y, player2.r, 0, Math.PI * 2);
+  // ctx.fillStyle = player2.color;
+  // ctx.fill();
+  // ctx.closePath();
 
   // Ball
   ctx.beginPath();
@@ -152,30 +152,24 @@ const controller = () => {
   if (collision(player1.x, player1.y, ball.x, ball.y) <= (ball.r + player1.r)) {
     const dx = ball.x - player1.x;
     const dy = ball.y - player1.y;
-    const dist = Math.sqrt(dx ** 2 + dy ** 2);
-    const dirX = dx / dist;
-    const dirY = dy / dist;
 
-    const Fx = dirX * Fpush - frictionCoef * ball.vx;
-    const Fy = dirY * Fpush - frictionCoef * ball.vy;
+    const Fvx = Fpush * dx;
+    const Fvy = Fpush * dy;
 
-    ball.ax = Fx / ball.m;
-    ball.ay = Fy / ball.m;
+    ball.ax += Fvx / ball.m;
+    ball.ay += Fvy / ball.m;
   }
 
-  if (collision(player2.x, player2.y, ball.x, ball.y) <= (ball.r + player2.r)) {
-    const dx = ball.x - player2.x;
-    const dy = ball.y - player2.y;
-    const dist = Math.sqrt(dx ** 2 + dy ** 2);
-    const dirX = dx / dist;
-    const dirY = dy / dist;
+  // if (collision(player2.x, player2.y, ball.x, ball.y) <= (ball.r + player2.r)) {
+  //   const dx = ball.x - player2.x;
+  //   const dy = ball.y - player2.y;
 
-    const Fx = dirX * Fpush - frictionCoef * ball.vx;
-    const Fy = dirY * Fpush - frictionCoef * ball.vy;
+  //   const Fvx = Fpush * dx;
+  //   const Fvy = Fpush * dy;
 
-    ball.ax = Fx / ball.m;
-    ball.ay = Fy / ball.m;
-  }
+  //   ball.ax += Fvx / ball.m;
+  //   ball.ay += Fvy / ball.m;
+  // }
 
   // GLBB
   // v = v0 + a * dt
@@ -208,20 +202,20 @@ const controller = () => {
 
 
   // Computer AUTO Algorithm
-  if ((ball.x != canvas.width / 2) || (ball.y != canvas.height / 2)) {
-    if (ball.x < player2.x && player2.x - player2.r > (ringPosition.lx + 20)) {
-      player2.x -= 5;
-    }
-    if (ball.x > player2.x && player2.x + player2.r < (ringPosition.rx + 20)) {
-      player2.x += 5;
-    }
-    if (ball.y < player2.y && player2.y - player2.r > (ringPosition.ty + 20)) {
-      player2.y -= 5;
-    }
-    if (ball.y > player2.y && player2.y + player2.r < (ringPosition.by + 20)) {
-      player2.y += 5;
-    }
-  }
+  // if ((ball.x != canvas.width / 2) || (ball.y != canvas.height / 2)) {
+  //   if (ball.x < player2.x && player2.x - player2.r > (ringPosition.lx + 20)) {
+  //     player2.x -= 5;
+  //   }
+  //   if (ball.x > player2.x && player2.x + player2.r < (ringPosition.rx + 20)) {
+  //     player2.x += 5;
+  //   }
+  //   if (ball.y < player2.y && player2.y - player2.r > (ringPosition.ty + 20)) {
+  //     player2.y -= 5;
+  //   }
+  //   if (ball.y > player2.y && player2.y + player2.r < (ringPosition.by + 20)) {
+  //     player2.y += 5;
+  //   }
+  // }
 }
 
 // Time interval render (FPS)
