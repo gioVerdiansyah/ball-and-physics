@@ -1,8 +1,8 @@
 const canvas = document.getElementById("main");
 const ctx = canvas.getContext("2d");
 
-canvas.width = canvas.clientWidth / 1.5;
-canvas.height = canvas.clientHeight;
+canvas.width = innerWidth / 2;
+canvas.height = innerHeight;
 
 const g = 9.81;
 const Fpush = 9000;
@@ -323,7 +323,7 @@ function main(now) {
   update(dt);
   draw();
 
-  renderFormulas();
+  // renderFormulas();
   requestAnimationFrame(main);
 }
 
